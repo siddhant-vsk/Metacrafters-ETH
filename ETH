@@ -1,0 +1,63 @@
+// Token system simulation
+
+class Token {
+    constructor(name, symbol) {
+        this.name = name;
+        this.symbol = symbol;
+        this.totalSupply = 0;
+        this.balances = {};
+    }
+
+    // Mint function to increase total supply and balance
+    mint(address, amount) {
+        if (!this.balances[address]) {
+            this.balances[address] = 0;
+        }
+        this.totalSupply += amount;
+        this.balances[address] += amount;
+        console.log(`Minted ${amount} ${this.symbol} to ${address}`);
+    }
+
+    // Burn function to decrease total supply and balance
+    burn(address, amount) {
+        if (!this.balances[address] || this.balances[address] < amount) {
+            console.log(`Insufficient balance to burn ${amount} ${this.symbol} from ${address}`);
+            return;
+        }
+        this.totalSupply -= amount;
+        this.balances[address] -= amount;
+        console.log(`Burned ${amount} ${this.symbol} from ${address}`);
+    }
+
+    // Function to check the balance
+    balanceOf(address) {
+        return this.balances[address] || 0;
+    }
+
+    // Function to get the total supply of the token
+    getTotalSupply() {
+        return this.totalSupply;
+    }
+}
+
+// Create an instance of the Token class
+const myToken = new Token("MyToken", "MTK");
+
+// Mint tokens
+myToken.mint("0x123", 100);
+myToken.mint("0x456", 50);
+
+// Check balances
+console.log(`Balance of 0x123: ${myToken.balanceOf("0x123")} MTK`);
+console.log(`Balance of 0x456: ${myToken.balanceOf("0x456")} MTK`);
+
+// Burn tokens
+myToken.burn("0x123", 30);
+myToken.burn("0x456", 60); // This should trigger an insufficient balance warning
+
+// Check balances again
+console.log(`Balance of 0x123: ${myToken.balanceOf("0x123")} MTK`);
+console.log(`Balance of 0x456: ${myToken.balanceOf("0x456")} MTK`);
+
+// Display total supply
+console.log(`Total Supply: ${myToken.getTotalSupply()} MTK`);
